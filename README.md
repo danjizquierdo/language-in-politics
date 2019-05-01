@@ -3,12 +3,12 @@ Analysis of US Congress 115 (2017-2018) using data on proposed Bills, tweets of 
 
 ## Data Sources
 * Bills:
-** Bill text information was taken from https://www.congress.gov
-** Bill vote information was taken from https://github.com/unitedstates/congress/wiki/votes
+.* Bill text information was taken from https://www.congress.gov
+.* Bill vote information was taken from https://github.com/unitedstates/congress/wiki/votes
 * Tweets:
-** Tweets were taken from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UIVHQR
+.* Tweets were taken from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UIVHQR
 * Lobbyists:
-** API applied for at https://www.govinfo.gov/bulkdata, confirmation pending
+.* API applied for at https://www.govinfo.gov/bulkdata, confirmation pending
 
 ## EDA
 The vast majority of bills proposed did not make it to a vote. 13,557 bills were proposed of which 4111 were considered active. 349 bills made it to a vote with only 55 of those being voted on jointly. 
