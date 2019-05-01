@@ -26,6 +26,16 @@ The document embeddings were calculated using Spacy's built in word vectors from
 Random undersampling was used to deal with the large class imbalance in the data after splitting 25% of the data for a test set.
 
 Three models with baseline parameters were used to set baselines for future predictions:
-* Logistic regression: test score 89.2%, f1-score (no vote) .94, f1-score (vote) .33
-* Random forest: test score 81.4%, f1-score (no vote) .90, f1-score (vote) .18
-* SGD Classifier: test score 91.4%, f1-score (no vote) .95, f1-score (vote) .37
+| Model | Test Score | F1- Score (no-vote) | F1-Score (vote) |
+|---|:---:|:---:|:---:|
+| Logistic regression |  89.2% | .94 |  .33 |
+| Random forest | 81.4% | .90 |  .18 |
+| SGD Classifier | 91.4% | .95 |  .37 |
+
+## Feature Engineering
+TO DO:
+Create similarity between representatives based on tweet embeddings for use in Louvain community detection
+Create similarity between representatives based on voting record
+Create similarity of above similarities
+Create custom word embeddings for tweets, repeat above and compare results
+Create custom word embeddings for bills and rerun baseline models to compare results
