@@ -35,8 +35,8 @@ Three models with baseline parameters were used to set baselines for future pred
 
 ## Feature Engineering
 TO DO:
-Create similarity between representatives based on tweet embeddings for use in Louvain community detection
-Create similarity between representatives based on voting record
-Create similarity of above similarities
-Create custom word embeddings for tweets, repeat above and compare results
-Create custom word embeddings for bills and rerun baseline models to compare results
+* Create similarity between representatives based on tweet embeddings for use in Louvain community detection
+* Create similarity between representatives based on voting record
+* Create similarity of above similarities
+* Create custom word embeddings for tweets, repeat above and compare results
+* Create custom word embeddings for bills and rerun baseline models to compare results
