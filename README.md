@@ -1,6 +1,8 @@
 # language-money-politics
 Analysis of US Congress 115 (2017-2018) using data on proposed Bills, tweets of Representatives and lobbyist information.
 
+https://docs.google.com/presentation/d/1E63hIkQxyjhnA7tJmvYACG4AxeqHnZ-moJ6FOysOXuw/edit?usp=sharing
+
 ## Data Sources
 * Bills:
   * Bill text information was taken from https://www.congress.gov
