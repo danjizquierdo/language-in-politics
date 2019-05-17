@@ -5,10 +5,12 @@ Final slide results:
 https://docs.google.com/presentation/d/1E63hIkQxyjhnA7tJmvYACG4AxeqHnZ-moJ6FOysOXuw/edit?usp=sharing
 
 ## Data Sources
-* Bills:
+* **Bills**:
+  * ~11,000 documents
   * Bill text information was taken from https://www.congress.gov
   * Bill vote information was taken from https://github.com/unitedstates/congress/wiki/votes
-* Tweets:
+* **Tweets**:
+  * ~ 2,000,000 documents
   * Tweets were taken from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UIVHQR
 
 ## EDA
