@@ -1,4 +1,4 @@
-# language-money-politics
+# language-in-politics
 Analysis of US Congress 115 (2017-2018) using data on proposed Bills, tweets of Representatives and lobbyist information.
 
 https://docs.google.com/presentation/d/1E63hIkQxyjhnA7tJmvYACG4AxeqHnZ-moJ6FOysOXuw/edit?usp=sharing
@@ -9,8 +9,6 @@ https://docs.google.com/presentation/d/1E63hIkQxyjhnA7tJmvYACG4AxeqHnZ-moJ6FOysO
   * Bill vote information was taken from https://github.com/unitedstates/congress/wiki/votes
 * Tweets:
   * Tweets were taken from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UIVHQR
-* Lobbyists:
-  * API applied for at https://www.govinfo.gov/bulkdata, confirmation pending
 
 ## EDA
 The vast majority of bills proposed did not make it to a vote. 13,557 bills were proposed of which 4111 were considered active. 349 bills made it to a vote with only 55 of those being voted on jointly. 
