@@ -73,6 +73,8 @@ The three types of models above were optimized using GridsearchCV with the added
 ### Random Forest Results
 ![Confusion matrix of the best performing model (Random Forest)](images/Random-Confusion.png)
 
+
+## Conclusions
 The models with the document embeddings had significant improvements over the baseline models. They more accurately determine if a bill has failed but also manage to recall the minority class with greater consistency and accuracy. It is likely that the models have picked up on similarities in topic of bills that are most likely to pass (examples from exploring the actual text include voting on the place of celebration for the commemoration of Kamehameha I). Further exploration is necessary to highlight the models' effectiveness in determining the success of more substantive legislative bills. The use of document embeddings makes interpretation of specific feature importance challenging. Next steps include looking into topic modeling of the passed bills and determining commonalities in those that the models managed to identify.
 
 ### TO DO:
