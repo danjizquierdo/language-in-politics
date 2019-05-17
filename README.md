@@ -1,5 +1,5 @@
 # language-in-politics
-Analysis of US Congress 115 (2017-2018) using data on proposed Bills, tweets of Representatives and lobbyist information.
+Analysis of US Congress 115 (2017-2018) using data on proposed Bills and tweets of Representatives.
 
 https://docs.google.com/presentation/d/1E63hIkQxyjhnA7tJmvYACG4AxeqHnZ-moJ6FOysOXuw/edit?usp=sharing
 
