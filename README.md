@@ -12,11 +12,15 @@ https://docs.google.com/presentation/d/1E63hIkQxyjhnA7tJmvYACG4AxeqHnZ-moJ6FOysO
   * Tweets were taken from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/UIVHQR
 
 ## EDA
+
+### Class Imbalance
 The vast majority of bills proposed did not make it to a vote. ~11,000 were proposed that could be voted on by both chambers. ~500 bills made it to a vote of which the vast majority passed. The exploration highlights how most bills are failed along the path of creation and not necessarily at the final stage of voting.
 
-### To-Do: Sentiment analysis statistical analysis
+#### To-Do: Sentiment analysis statistical analysis
 Sentiment analysis was performed using NLTK's Vader approach.
 
+
+### Topic Modeling
 Topic modeling was conducted using Gensim's LDA model according to the steps and code provided by https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/ in order to determine the areas of discussion amongst the representatives. Based on the coherence score 25 topics were chosen and then manually binned into more general topic umbrellas with their representative words:
 * **Civil Rights**: rt, woman, thank, work, pay, equal, man, housegop, support, timeright, rt, protect, vote, must, woman, fight, stand, today, internet
 * **Community**: day, congrat, win, congratulation, go, today, team, great, game, nationalwork, help, community, support, program, business, local, today, center, thank, family, must, thought, prayer, victim, people, attack, stand, keep, community
@@ -34,7 +38,7 @@ The breakdown of each topics prominence in the corpus of tweets is shown in the 
 
 ![Pie Chart of topic breakdown by percentage](images/TopicPie.png)
 
-### Baseline Model
+## Baseline Models
 A first pass was made to determine whether it could be predicted if a bill would come to a vote. The features used in the baseline mode were:
 * number of democratic cosponsors 
 * number of republican cosponsors
@@ -55,6 +59,8 @@ The baseline models did moderately well in determining if a bill failed (the maj
 ## Feature Engineering
 To determine if the text of a bill is predictive of its resolution it is necessary to create a numerical representation of the unstructured data. To do this document embeddings were calculated using Spacy's built in word vectors from en_core_web_lg and aggregated over the entire document. 
 
+
+## Final Models
 The three types of models above were optimized using GridsearchCV with the added feature of the document embeddings.
 
 | Model | F1 Score (Failed) | F1 Score (Passed) |
@@ -64,7 +70,7 @@ The three types of models above were optimized using GridsearchCV with the added
 | SGD Classifier | .99 |  .83 |
 
 
-Random Forest results:
+### Random Forest Results
 ![Confusion matrix of the best performing model (Random Forest)](images/Random-Confusion.png)
 
 The models with the document embeddings had significant improvements over the baseline models. They more accurately determine if a bill has failed but also manage to recall the minority class with greater consistency and accuracy. It is likely that the models have picked up on similarities in topic of bills that are most likely to pass (examples from exploring the actual text include voting on the place of celebration for the commemoration of Kamehameha I). Further exploration is necessary to highlight the models' effectiveness in determining the success of more substantive legislative bills. The use of document embeddings makes interpretation of specific feature importance challenging. Next steps include looking into topic modeling of the passed bills and determining commonalities in those that the models managed to identify.
