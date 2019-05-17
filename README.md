@@ -26,6 +26,7 @@ The document embeddings were calculated using Spacy's built in word vectors from
 Random undersampling was used to deal with the large class imbalance in the data after splitting 25% of the data for a test set.
 
 Three models with baseline parameters were used to set baselines for future predictions:
+
 | Model | Test Score | F1- Score (no-vote) | F1-Score (vote) |
 |---|:---:|:---:|:---:|
 | Logistic regression |  89.2% | .94 |  .33 |
