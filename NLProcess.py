@@ -43,8 +43,6 @@ from bokeh.plotting import figure, output_file, show
 from bokeh.models import Label
 from bokeh.io import output_notebook
 
-# Gathering
-
 def collate_files(path):
     """ Goes through folder of stored tweets and collects them into arrays.
 
@@ -121,6 +119,9 @@ def model_topics(df):
             numbers of topics.
         coherence_values ([float]): List of float values with Coherence scores for the 
             corresponding models in the above list.
+        id2word (Dictionary): Word to Id mapping for the words appearing in the corpus.
+        corpus ([[int]]): Documents converted into a bag of words referenced by id in 
+            Dictionary above.
     """
 
     data = df.text.values.tolist()
@@ -158,7 +159,7 @@ def model_topics(df):
     # Perform Topic Modeling for number of topics ranging from 5 to 50 in steps of 5
     model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=5, limit=50, step=5)
 
-    return model_list,coherence_values
+    return model_list,coherence_values,corpus,id2word
 
 def sent_to_words(sentences):
     """ Process sentences in the tweets into a list of tokens. """
@@ -374,7 +375,7 @@ def topic_wordcloud(top_model):
 
 def topic_sne(top_model,sample_corpus):
     """ Produce a visualization of the seperation of the topics and documents in the corpus. """
-    
+
     # Get topic weights
     topic_weights = []
     for i, row_list in enumerate(top_model[sample_corpus]):
