@@ -1,3 +1,4 @@
+# Import libraries
 from fastai.text import *
 import numpy as np
 from collections import Counter
@@ -45,11 +46,23 @@ from bokeh.io import output_notebook
 # Gathering
 
 def collate_files(path):
+    """ Goes through folder of stored tweets and collects them into arrays.
+
+    Parameters:
+        path (Path): Special Path object from fastai which allows easy crawling through 
+            directory.
+    Returns:
+        texts, users ([str]): NumPy Arrays of Strings returned for the tweets in the files
+            along with the user associated with each tweet.
+
+    """
     import io
     texts,users = [],[]
+    # Crawl through folders contained in root path given
     for fname in (path).glob('*[A-z]*'):
         try:
             with io.open(fname,'r',encoding='utf8') as f:
+                # In each file every row is a tweet, a user, and any mentioned user
                 for row in f:
                     row = row.split('|')
                     if len(row)==3:
@@ -61,28 +74,55 @@ def collate_files(path):
 
 # Sentiment & Embeddings
 
-def sentimental(df)   
+def sentimental(df):
+    """ Perform sentiment analysis through NLTK's vader approach and produce document 
+        embeddings from spaCy's pre-trained word embeddings.
+    
+    Parameters:
+        df (DataFrame): Pandas DF containing a column labeled 'Text' which corresponds to 
+            a single tweet.
+    Returns:
+        df (DataFrame): Pandas DF with added columns 'Sentiment' and 'Embedding'.
+    """
     sentiment_analyzer = SentimentIntensityAnalyzer()
 
+    # Define a getter function for the sentiment score
     def polarity_scores(doc):
         return sentiment_analyzer.polarity_scores(doc.text)
      
     Doc.set_extension('polarity_scores', getter=polarity_scores)
 
+    # Apply the functions to get sentiment and the document embeddings as defined below
     df['sentiment']=df['text'].apply(get_sentiment)
     df['embedding']=df['text'].apply(get_embedding)
     return df
 
 def get_sentiment(text):
+    """ Retrieve the aggregate sentiment score. """
     return nlp(text)._.polarity_scores['compound']
 
 def get_embedding(text):
+    """ Produce a document embedding that aggregates the word embeddings of the text. """
     tweet = nlp(text)
     return tweet.vector
 
 # Topic Modeling
 
 def model_topics(df):
+    """ Go through a corpus of documents and perform topic modeling, code sourced from the 
+    excellent tutorial at Machine Learning Plus found at the link below.
+    https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
+
+    Parameters:
+        df (DataFrame): Pandas DF containing a column labeled text on which the topic
+            modeling is performed.
+    Returns:
+        model_list ([LdaMulticore]): List of gensim LdaMulticore models trained for different
+            numbers of topics.
+        coherence_values ([float]): List of float values with Coherence scores for the 
+            corresponding models in the above list.
+    """
+
     data = df.text.values.tolist()
     data_words = list(sent_to_words(data))
 
@@ -101,7 +141,6 @@ def model_topics(df):
     data_words_bigrams = make_bigrams(data_words_nostops)
 
     # Initialize spacy 'en' model, keeping only tagger component (for efficiency)
-    # python3 -m spacy download en
     nlp = spacy.load('en', disable=['parser', 'ner'])
 
     # Do lemmatization keeping only noun, adj, vb, adv
@@ -116,29 +155,30 @@ def model_topics(df):
     # Term Document Frequency
     corpus = [id2word.doc2bow(text) for text in texts]
 
+    # Perform Topic Modeling for number of topics ranging from 5 to 50 in steps of 5
     model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=5, limit=50, step=5)
 
     return model_list,coherence_values
 
-print(data_lemmatized[:1])
-pickle.dump(data_lemmatized,open(LM_PATH/'data_lemmatized.pkl','wb'))
-
 def sent_to_words(sentences):
+    """ Process sentences in the tweets into a list of tokens. """
     for sentence in sentences:
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
 
-
 def remove_stopwords(texts):
+    """ Process the words in each tweet of the corpus to remove stopwords as defined by NLTK.  """
     return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
 
 def make_bigrams(texts):
+    """ Create list of bigrams from the tweets in the corpus. """
     return [bigram_mod[doc] for doc in texts]
 
 def make_trigrams(texts):
+    """ Create list of trigrams from the tweets in the corpus. """
     return [trigram_mod[bigram_mod[doc]] for doc in texts]
 
 def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-    """https://spacy.io/api/annotation"""
+    """ Create lemmas through spaCy https://spacy.io/api/annotation"""
     texts_out = []
     for sent in texts:
         doc = nlp(" ".join(sent)) 
@@ -146,20 +186,19 @@ def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
     return texts_out
 
 def compute_coherence_values(dictionary, corpus, texts, limit, start=5, step=5):
-    """
-    Compute c_v coherence for various number of topics
+    """ Compute coherence values for various number of topics.
 
     Parameters:
-    ----------
-    dictionary : Gensim dictionary
-    corpus : Gensim corpus
-    texts : List of input texts
-    limit : Max num of topics
+        dictionary : Gensim dictionary
+        corpus : Gensim corpus
+        texts : List of input texts
+        limit : Max num of topics
+        start : Int of lowest number of topics to model
+        step : Int of increment to change number of topics to model
 
     Returns:
-    -------
-    model_list : List of LDA topic models
-    coherence_values : Coherence values corresponding to the LDA model with respective number of topics
+        model_list : List of LDA topic models
+        coherence_values : Coherence values corresponding to the LDA model with respective number of topics
     """
     coherence_values = []
     model_list = []
@@ -181,6 +220,7 @@ def compute_coherence_values(dictionary, corpus, texts, limit, start=5, step=5):
     return model_list, coherence_values
 
 def graph_coherence(coherence_values):
+    """ Graph a list of coherence values to determine the optimal number of topics to model. """
     limit=50; start=5; step=5;
     x = range(start, limit, step)
     plt.plot(x, coherence_values)
@@ -194,6 +234,11 @@ def graph_coherence(coherence_values):
         print("Num Topics =", m, " has Coherence Value of", round(cv, 4))
 
 def find_dominant_topic(df_topic_sents_keywords):
+    """ Discover the most representative document in a corpus for each topic, code sourced from the 
+    excellent tutorial at Machine Learning Plus found at the link below.
+    https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
+    """
+
     # Format
     df_dominant_topic = df_topic_sents_keywords.reset_index()
     df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
@@ -217,6 +262,11 @@ def find_dominant_topic(df_topic_sents_keywords):
     return sent_topics_sorteddf
 
 def topic_stats(df_topic_sents_keywords):
+    """ Compute aggregations and statistics on the topics modeled in a corpus, 
+    code sourced from the excellent tutorial at Machine Learning Plus found at the link below.
+    https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
+    """
+
     # Number of Documents for Each Topic
     topic_counts = df_topic_sents_keywords['Dominant_Topic'].value_counts()
 
@@ -236,6 +286,7 @@ def topic_stats(df_topic_sents_keywords):
     df_dominant_topics
 
 def group_topics(sent_topics_sorteddf):
+    """ Relabel and aggregate documents under handlabeled and binned categories."""
     new_topics=pd.concat([sent_topics_sorteddf.groupby('Topic_Num').head()[['Keywords']],
            topic_contribution.sort_index(),
           pd.Series(['Economy','Immigration','Environment','Event',
@@ -260,6 +311,11 @@ def group_topics(sent_topics_sorteddf):
     [print(f'{topic}: ' + words) for topic,words in zip(new_topic_words.index,new_topic_words)]
 
 def format_topics_sentences(ldamodel=top_model, corpus=corpus, texts=data):
+    """ Discover the dominant topics for each document in a corpus, code sourced from the 
+    excellent tutorial at Machine Learning Plus found at the link below.
+    https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
+    """
+
     # Init output
     sent_topics_df = pd.DataFrame()
     start = time.time()
@@ -284,6 +340,8 @@ def format_topics_sentences(ldamodel=top_model, corpus=corpus, texts=data):
     return(sent_topics_df)
 
 def topic_wordcloud(top_model):
+    """ Produce a wordcloud for each topic in the model. """
+
     cols = [color for name, color in mcolors.TABLEAU_COLORS.items()]  # more colors: 'mcolors.XKCD_COLORS'
 
     cloud = WordCloud(stopwords=stop_words,
@@ -315,7 +373,8 @@ def topic_wordcloud(top_model):
     plt.show()
 
 def topic_sne(top_model,sample_corpus):
-    # Get topic weights and dominant topics ------------
+    """ Produce a visualization of the seperation of the topics and documents in the corpus. """
+    
     # Get topic weights
     topic_weights = []
     for i, row_list in enumerate(top_model[sample_corpus]):
