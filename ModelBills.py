@@ -13,7 +13,12 @@ def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
                           cmap=plt.cm.Greys):
-    import numpy as np
+    """ Produce a confusion matrix for classification model.
+    Parameters:
+        cm ()
+    
+    """
+
     if normalize:
         cm = np.round(np.divide(cnf_matrix.T,[np.sum(row) for row in cnf_matrix]).T,2)
     
