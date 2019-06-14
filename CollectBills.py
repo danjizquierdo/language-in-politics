@@ -13,6 +13,7 @@ import credentials
 def get_bill_ids(limit=76,target='https://www.congress.gov/quick-search/legislation?wordsPhrases=&wordVariants=on&congresses%5B0%5D=115&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&pageSize=250&page='):
 	# Scrape the bill ids from congress.gov
 	bill_ids=[]
+	amdt_ids=[]
 	for page in range(1,limit):
 		page = requests.get(target+str(page))
 		soup =BeautifulSoup(page.content,'html.parser')
@@ -25,7 +26,7 @@ def get_bill_ids(limit=76,target='https://www.congress.gov/quick-search/legislat
 				bill_ids.append(bill_id)
 	return bill_ids, amdt_ids
 
-def populate_bills(bill_ids,amdt_ids,graph=Graph("bolt://localhost:7687", auth=("neo4j", "P@ssw0rd")),key=credentials.XAPIKey,target='https://api.propublica.org/congress/v1/115/bills/'):
+def populate_bills(bill_ids,amdt_ids,graph=Graph("bolt://localhost:7687", auth=("Admin", "P@ssw0rd")),key=credentials.XAPIKey,target='https://api.propublica.org/congress/v1/115/bills/'):
 
 	# Scrape bills with their committees and link them to their sponsors in the graph
 	params = {'X-API-Key': key}
@@ -117,7 +118,7 @@ def populate_bills(bill_ids,amdt_ids,graph=Graph("bolt://localhost:7687", auth=(
 				print(f'Oops! Gotta grab {bill} later, maybe.')
 	return errors
 
-def write_bills(bill_ids,amdt_ids, graph = Graph("bolt://localhost:7687", auth=("neo4j", "P@ssw0rd"))):
+def write_bills(bill_ids,amdt_ids, graph = Graph("bolt://localhost:7687", auth=("Admin", "P@ssw0rd"))):
 
 	# Scraper for bill text
 	for count,bill in enumerate(bill_ids):
@@ -336,7 +337,7 @@ def collect_votes(rootdir='/Users/flatironschool/congress/congress/data/115/vote
 
 def collect_votes_bills(rootdir='/Users/flatironschool/congress/congress/data/115/bills/'):
 	import os
-	graph = Graph("bolt://localhost:7687", auth=("neo4j", "P@ssw0rd"))
+	graph = Graph("bolt://localhost:7687", auth=("Admin", "P@ssw0rd"))
 	# helper function to convert strings to floats
 	# credit: https://stackoverflow.com/questions/1806278/convert-fraction-to-float
 	def convert_to_float(frac_str):
@@ -508,7 +509,7 @@ def collect_votes_bills(rootdir='/Users/flatironschool/congress/congress/data/11
 	'''
 	graph.run(tally_query)
 
-def write_surname(graph=Graph("bolt://localhost:7687", auth=("neo4j", "P@ssw0rd"))):
+def write_surname(graph=Graph("bolt://localhost:7687", auth=("Admin", "P@ssw0rd"))):
 	import unidecode
 	ln_query='MATCH (r:Rep) RETURN r.name'
 	names=graph.run(ln_query).to_data_frame()
@@ -526,7 +527,7 @@ def write_surname(graph=Graph("bolt://localhost:7687", auth=("neo4j", "P@ssw0rd"
 		graph.run(ln_write,par)
 	return names.head()
 
-def get_df(graph=Graph("bolt://localhost:7687", auth=("neo4j", "P@ssw0rd"))):
+def get_df(graph=Graph("bolt://localhost:7687", auth=("Admin", "P@ssw0rd"))):
 	# query for all bills
 	t_query ='''
 	MATCH (n:Bill)

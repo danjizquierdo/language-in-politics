@@ -8,7 +8,6 @@ import csv
 import html
 import random
 import matplotlib.pyplot as plt
-%matplotlib inline
 from sklearn.model_selection import train_test_split
 import spacy
 from spacy.tokens import Doc
@@ -311,7 +310,7 @@ def group_topics(sent_topics_sorteddf):
           'Legislation'])],axis=1).groupby(0)['Keywords'].sum()
     [print(f'{topic}: ' + words) for topic,words in zip(new_topic_words.index,new_topic_words)]
 
-def format_topics_sentences(ldamodel=top_model, corpus=corpus, texts=data):
+def format_topics_sentences(ldamodel, corpus, texts):
     """ Discover the dominant topics for each document in a corpus, code sourced from the 
     excellent tutorial at Machine Learning Plus found at the link below.
     https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/

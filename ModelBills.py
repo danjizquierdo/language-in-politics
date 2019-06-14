@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
@@ -24,7 +25,6 @@ def plot_confusion_matrix(cm, classes,
     
     import itertools
     import matplotlib.pyplot as plt
-    %matplotlib inline
 
     plt.imshow(cm,  cmap=cmap) #Create the basic matrix.
 
